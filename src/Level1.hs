@@ -20,9 +20,9 @@ import TypeCheck (Todo)
 -- ваши называются fstChurch и sndChurch.
 -- Ознакомьтесь с тем, как это задание тестируется в test/SpecLevel1.hs.
 
-pair = todo "1.1 pair"
-fstChurch = todo "1.1 fstChurch"
-sndChurch = todo "1.1 sndChurch"
+pair = \x y -> (x, y) --todo "1.1 pair"
+fstChurch = \(x, _) -> x
+sndChurch = \(_, y) -> y
 
 
 -- 1.2. Взаимная рекурсия
@@ -37,10 +37,16 @@ sndChurch = todo "1.1 sndChurch"
 -- При реализации используйте охранные выражения (guards, см. лекцию).
 
 isEven :: Integer -> Bool
-isEven = todo "1.2 isEven"
+isEven x
+  | x == 0 = True
+  | x < 0 = isOdd(x + 1)
+  | otherwise = isOdd(x - 1)
 
 isOdd :: Integer -> Bool
-isOdd = todo "1.2 isOdd"
+isOdd x 
+  | x == 0 = False
+  | x < 0 = isEven(x + 1)
+  | otherwise = isEven(x - 1)
 
 
 -- 1.3. Найдите ошибку
@@ -57,7 +63,7 @@ facBuggy n = go n (n - 1)
       | otherwise = go (acc * n') (n' - 1)
 
 counterexample :: Integer
-counterexample = todo "1.3"
+counterexample = 0
 
 
 -- 1.4. Рекуррентная последовательность
@@ -67,8 +73,15 @@ counterexample = todo "1.3"
 -- Постарайтесь сделать так, чтобы ваша функция работала за линейное время.
 
 itemAt :: Integer -> Integer
-itemAt = todo "1.4"
-
+itemAt n
+  | n == 0 = 1
+  | n == 1 = 2
+  | n == 2 = 3
+  | otherwise = go (1, 2, 3) (n - 3)
+  where
+    go (a, b, c) n
+      | n == 0 = 3 * a - 2 * b + c
+      | otherwise = go (b, c, 3 * a - 2 * b + c) (n - 1)
 
 -- 1.5. Цифры числа
 --
@@ -77,7 +90,13 @@ itemAt = todo "1.4"
 -- последним действием. Используйте параметры-аккумуляторы.
 
 nSumDigits :: Integer -> (Integer, Integer)
-nSumDigits = todo "1.5"
+nSumDigits n
+  | n == 0 = (1, 0)
+  | otherwise = go (0, 0) (abs n)
+  where 
+    go (cnt, total) n 
+      | n == 0 = (cnt, total)
+      | otherwise = go (cnt + 1, total + (n `mod` 10)) (n `div` 10)
 
 
 -- 1.6. Предскажите тип
@@ -88,13 +107,13 @@ nSumDigits = todo "1.5"
 -- Сначала запишите ответ, и только потом сверьтесь с интерпретатором командой :t.
 
 -- uncurry const
-typeOfUncurryConst :: Todo
+typeOfUncurryConst :: (a, b) -> a
 typeOfUncurryConst = undefined
 
 -- curry fst
-typeOfCurryFst :: Todo
+typeOfCurryFst :: a -> b -> a
 typeOfCurryFst = undefined
 
 -- flip (,)
-typeOfFlipPair :: Todo
+typeOfFlipPair :: a -> b -> (b, a)
 typeOfFlipPair = undefined
